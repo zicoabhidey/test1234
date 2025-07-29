@@ -1,0 +1,16 @@
+[
+  {
+    "title": "My First Post!",
+    "date": "2024-07-28T10:00:00.000Z",
+    "author": "Admin",
+    "thumbnail": "https://placehold.co/800x400/6366f1/ffffff?text=Hello+World",
+    "body": "This is my first post, written entirely through the web-based CMS interface! It's saved as a Markdown file in my GitHub repository.\n\nIsn't that cool? You can add **bold text**, *italics*, and more."
+  },
+  {
+    "title": "How a Headless CMS Works",
+    "date": "2024-07-29T11:30:00.000Z",
+    "author": "Tech Writer",
+    "thumbnail": "https://placehold.co/800x400/10b981/ffffff?text=Architecture",
+    "body": "A headless CMS separates your content from its presentation. This means you can write content once and display it anywhere:\n\n- On a website\n- In a mobile app\n- On a digital billboard\n\nThe CMS provides a GUI for content creators and an API (or in this case, Git files) for developers."
+  }
+]

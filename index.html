@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Headless CMS Site</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .prose img { margin-top: 1rem; margin-bottom: 1rem; border-radius: 0.5rem; }
+    </style>
+    <!-- Decap CMS for the admin interface -->
+    <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+    <!-- Header -->
+    <header class="bg-white shadow-sm">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+            <h1 class="text-3xl font-bold text-gray-900">My Awesome Blog</h1>
+            <p class="text-gray-500 mt-1">Powered by a Headless CMS & GitHub Pages</p>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div id="posts-container" class="space-y-12">
+            <!-- Posts will be loaded here by JavaScript -->
+            <div class="text-center py-16">
+                <p class="text-gray-500">Loading posts...</p>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white mt-12">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6 text-center text-gray-500">
+            <p>&copy; 2024 My Awesome Blog. All rights reserved.</p>
+            <!-- The link to the admin panel is the key for content editors -->
+            <p class="mt-2">
+                <a href="/admin/" class="text-indigo-600 hover:text-indigo-800 font-medium">Admin Login</a>
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        // This script will fetch the content and render it.
+        // In a real-world Static Site Generator (SSG), this data would be
+        // pre-rendered into the HTML at build time for better performance and SEO.
+        // For this example, we'll fetch it client-side to keep it simple.
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const postsContainer = document.getElementById('posts-container');
+
+            // This function simulates fetching a JSON file that a build process would create.
+            // We are fetching from a `posts.json` that we assume is generated from our markdown files.
+            // For this example to work without a build step, we will manually create this file.
+            async function loadPosts() {
+                try {
+                    // In a real setup, a build script would generate this JSON file
+                    // from all the markdown files in the `_posts` directory.
+                    const response = await fetch('./posts.json');
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    const posts = await response.json();
+
+                    postsContainer.innerHTML = ''; // Clear loading message
+
+                    if (posts.length === 0) {
+                        postsContainer.innerHTML = '<p class="text-center text-gray-500">No posts yet. Add one in the admin panel!</p>';
+                        return;
+                    }
+                    
+                    // Sort posts by date, newest first
+                    posts.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+                    posts.forEach(post => {
+                        const postElement = document.createElement('article');
+                        postElement.className = 'bg-white p-6 sm:p-8 rounded-lg shadow-md';
+                        
+                        const postDate = new Date(post.date).toLocaleDateString('en-US', {
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric'
+                        });
+
+                        // We need a simple markdown-to-HTML converter for the body.
+                        // Let's create a basic one. For a real site, use a library like 'marked'.
+                        const formattedBody = post.body
+                            .replace(/</g, '&lt;')
+                            .replace(/>/g, '&gt;')
+                            .replace(/\n/g, '<br>');
+
+
+                        postElement.innerHTML = `
+                            <h2 class="text-2xl sm:text-3xl font-bold text-gray-900">${post.title}</h2>
+                            <p class="text-sm text-gray-500 mt-2">By ${post.author} on ${postDate}</p>
+                            ${post.thumbnail ? `<img src="${post.thumbnail}" alt="${post.title}" class="my-4 rounded-lg shadow-sm w-full h-auto object-cover" style="max-height: 400px;">` : ''}
+                            <div class="prose prose-lg max-w-none mt-6 text-gray-700">
+                                ${formattedBody}
+                            </div>
+                        `;
+                        postsContainer.appendChild(postElement);
+                    });
+
+                } catch (error) {
+                    console.error("Failed to load posts:", error);
+                    postsContainer.innerHTML = '<p class="text-center text-red-500">Error: Could not load posts. See console for details.</p>';
+                }
+            }
+
+            loadPosts();
+        });
+    </script>
+
+    <!-- 
+    This is the structure of your project. You would create these files in your GitHub repository.
+
+    /
+    ├── index.html            (This file)
+    ├── admin/
+    │   ├── index.html        (The file that loads the CMS GUI)
+    │   └── config.yml        (The configuration for the CMS)
+    ├── _posts/
+    │   ├── my-first-post.md  (Example content file created by the CMS)
+    │   └── another-post.md   (Another content file)
+    ├── posts.json            (A file containing all posts, which you'd generate)
+    └── .github/workflows/
+        └── deploy.yml        (The GitHub Action to build and deploy your site)
+
+    -->
+</body>
+</html>
