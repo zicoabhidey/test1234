@@ -3,7 +3,7 @@
 
 backend:
   name: github
-  repo: your-username/your-repo-name # IMPORTANT: Change this to your GitHub repo
+  repo: zicoabhidey/test1234 # IMPORTANT: Change this to your GitHub repo
   branch: main # The branch to update
   
 # This is where the media (e.g., images) uploaded via the CMS will be stored.
