@@ -4,11 +4,41 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Content Manager</title>
-  <!-- This script loads the Decap CMS interface -->
-  <link href="config.yml" type="text/yaml" rel="cms-config-url">
+  
+  <script>
+    // This script embeds the configuration directly into the page
+    // to ensure it is loaded before the CMS script runs.
+    window.CMS_CONFIG = {
+      backend: {
+        name: "github",
+        repo: "zicoabhidey/your-repo-name", // IMPORTANT: Change this to your repo name
+        branch: "main",
+        auth_type: "pkce",
+        app_id: "PASTE_YOUR_CLIENT_ID_HERE", // IMPORTANT: Paste your Client ID
+      },
+      media_folder: "assets/uploads",
+      public_folder: "/assets/uploads",
+      collections: [
+        {
+          name: "blog",
+          label: "Blog Posts",
+          folder: "_posts",
+          create: true,
+          slug: "{{year}}-{{month}}-{{day}}-{{slug}}",
+          fields: [
+            { label: "Title", name: "title", widget: "string" },
+            { label: "Publish Date", name: "date", widget: "datetime" },
+            { label: "Author", name: "author", widget: "string", default: "Admin" },
+            { label: "Thumbnail", name: "thumbnail", widget: "image", required: false },
+            { label: "Body", name: "body", widget: "markdown" },
+          ],
+        },
+      ],
+    };
+  </script>
 </head>
 <body>
-  <!-- The CMS will mount itself here -->
+  <!-- The CMS will find the CMS_CONFIG global variable and use it -->
   <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
 </body>
 </html>
